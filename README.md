@@ -4,6 +4,8 @@ Official React wrapper for [timepicker-ui](https://github.com/pglejzer/timepicke
 
 A lightweight, SSR-safe React component that provides a thin wrapper around the powerful timepicker-ui library with full TypeScript support.
 
+**[View Live Documentation](https://timepicker-ui.vercel.app/react)** • **[Try Interactive Demo](https://timepicker-ui.vercel.app/react#examples)**
+
 ## Features
 
 - ✅ **Full TypeScript Support** - All types directly from timepicker-ui core
@@ -16,16 +18,18 @@ A lightweight, SSR-safe React component that provides a thin wrapper around the 
 ## Installation
 
 ```bash
-npm install timepicker-ui-react timepicker-ui
+npm install timepicker-ui-react
 ```
 
 ```bash
-yarn add timepicker-ui-react timepicker-ui
+yarn add timepicker-ui-react
 ```
 
 ```bash
-pnpm add timepicker-ui-react timepicker-ui
+pnpm add timepicker-ui-react
 ```
+
+> **Note:** `timepicker-ui` is automatically installed as a dependency, no need to install it separately.
 
 ## Usage
 
@@ -368,6 +372,8 @@ MIT
 
 ## Links
 
-- [timepicker-ui GitHub](https://github.com/pglejzer/timepicker-ui)
-- [timepicker-ui Documentation](https://github.com/pglejzer/timepicker-ui)
-- [Report Issues](https://github.com/pglejzer/timepicker-ui-react/issues)
+- [timepicker-ui GitHub](https://github.com/pglejzer/timepicker-ui) — Core library repository
+- [timepicker-ui Documentation](https://timepicker-ui.vercel.app) — Full documentation for core library
+- [timepicker-ui-react Documentation](https://timepicker-ui.vercel.app/react) — React wrapper documentation
+- [timepicker-ui-react GitHub](https://github.com/pglejzer/timepicker-ui-react) — This repository
+- [Report Issues](https://github.com/pglejzer/timepicker-ui-react/issues) — Bug reports and feature requests
