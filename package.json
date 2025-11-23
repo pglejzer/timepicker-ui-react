@@ -1,0 +1,49 @@
+{
+  "name": "timepicker-ui-react",
+  "version": "1.0.0",
+  "description": "Official React wrapper for timepicker-ui v4.x",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "cd src && npm run build"
+  },
+  "keywords": [
+    "timepicker",
+    "timepicker-ui-react",
+    "timepicker-ui",
+    "time-picker",
+    "react",
+    "react-timepicker",
+    "ui",
+    "typescript",
+    "material-design"
+  ],
+  "author": "Piotr Glejzer",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pglejzer/timepicker-ui-react.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pglejzer/timepicker-ui-react/issues"
+  },
+  "homepage": "https://github.com/pglejzer/timepicker-ui-react#readme",
+  "peerDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "dependencies": {
+    "timepicker-ui": "^4.0.1"
+  }
+}

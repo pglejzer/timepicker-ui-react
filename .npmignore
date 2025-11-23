@@ -1,0 +1,17 @@
+app/
+node_modules/
+yarn-lock*
+src/
+package-lock*
+yarn-error.log
+demo*
+.editorconfig
+timepicker-ui-*
+.npmrc
+.github*
+.vscode
+tsconfig*
+lib*
+docs
+CHANGELOG.md
+

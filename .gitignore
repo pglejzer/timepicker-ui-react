@@ -1,0 +1,12 @@
+node_modules/
+yarn.lock
+package-lock.json
+yarn-error.log
+app/dist
+timepicker-ui-*
+lib*
+dist
+coverage/
+OPTIMIZATION_*.md
+readme_dev*.md
+readme/*.md
