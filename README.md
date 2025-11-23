@@ -4,6 +4,7 @@ Official React wrapper for [timepicker-ui](https://github.com/pglejzer/timepicke
 
 [![npm version](https://badge.fury.io/js/timepicker-ui-react.svg)](https://badge.fury.io/js/timepicker-ui-react)
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](https://img.shields.io/npm/l/timepicker-ui-react)
+[![size](https://img.shields.io/bundlephobia/minzip/timepicker-ui-react)](https://bundlephobia.com/package/timepicker-ui-react)
 
 A lightweight, SSR-safe React component that provides a thin wrapper around the powerful timepicker-ui library with full TypeScript support.
 
