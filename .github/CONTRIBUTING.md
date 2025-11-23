@@ -1,5 +1,3 @@
-# CONTRIBUTING.md (wersja bez ikonek)
-
 # Contributing to timepicker-ui-react
 
 Thank you for your interest in contributing to timepicker-ui-react.  
