@@ -2,6 +2,9 @@
 
 Official React wrapper for [timepicker-ui](https://github.com/pglejzer/timepicker-ui) v4.x.
 
+[![npm version](https://badge.fury.io/js/timepicker-ui-react.svg)](https://badge.fury.io/js/timepicker-ui-react)
+[![license](https://img.shields.io/badge/license-MIT-green.svg)](https://img.shields.io/npm/l/timepicker-ui-react)
+
 A lightweight, SSR-safe React component that provides a thin wrapper around the powerful timepicker-ui library with full TypeScript support.
 
 **[View Live Documentation](https://timepicker-ui.vercel.app/react)** • **[Try Interactive Demo](https://timepicker-ui.vercel.app/react/examples)**
