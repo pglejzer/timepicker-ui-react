@@ -12,12 +12,12 @@ A lightweight, SSR-safe React component that provides a thin wrapper around the 
 
 ## Features
 
-- ✅ **Full TypeScript Support** - All types directly from timepicker-ui core
-- ✅ **SSR-Safe** - Works with Next.js, Remix, Gatsby, and other SSR frameworks
-- ✅ **Zero Type Duplication** - Re-exports core types, no duplicated interfaces
-- ✅ **Event-Driven** - Direct mapping to timepicker-ui's EventEmitter API
-- ✅ **Controlled & Uncontrolled** - Support for both value patterns
-- ✅ **ESM Only** - Modern, tree-shakeable bundle
+- **Full TypeScript Support** - All types directly from timepicker-ui core
+- **SSR-Safe** - Works with Next.js, Remix, Gatsby, and other SSR frameworks
+- **Zero Type Duplication** - Re-exports core types, no duplicated interfaces
+- **Event-Driven** - Direct mapping to timepicker-ui's EventEmitter API
+- **Controlled & Uncontrolled** - Support for both value patterns
+- **ESM Only** - Modern, tree-shakeable bundle
 
 ## Installation
 
