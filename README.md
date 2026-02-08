@@ -115,7 +115,7 @@ function App() {
       onCancel={() => console.log("Cancelled")}
       onUpdate={(data) => console.log("Updated:", data)}
       onSelectHour={(data) => console.log("Hour selected:", data)}
-      onSelectMinute={(data) => console.log("Minute selected:", data)}
+      onSelectMinute=(data) => console.log("Minute selected:", data)}
       onSelectAM={() => console.log("AM selected")}
       onSelectPM={() => console.log("PM selected")}
       onError={(data) => console.log("Error:", data)}
@@ -123,6 +123,65 @@ function App() {
   );
 }
 ```
+
+### Using Plugins (Timezone & Range)
+
+> **Important:** Timezone and Range features are **plugins** that must be manually imported and registered. They are **not included by default** for tree-shaking optimization.
+
+```tsx
+"use client";
+
+import React, { useEffect } from "react";
+import { Timepicker, PluginRegistry } from "timepicker-ui-react";
+
+function App() {
+  useEffect(() => {
+    // Register plugins once when component mounts
+    const registerPlugins = async () => {
+      const { TimezonePlugin } = await import("timepicker-ui/plugins/timezone");
+      const { RangePlugin } = await import("timepicker-ui/plugins/range");
+
+      PluginRegistry.register(TimezonePlugin);
+      PluginRegistry.register(RangePlugin);
+    };
+
+    registerPlugins();
+  }, []);
+
+  return (
+    <>
+      {/* Timezone example */}
+      <Timepicker
+        options={{
+          timezone: {
+            enabled: true,
+            default: "America/New_York",
+          },
+        }}
+        onTimezoneChange={(data) => console.log("Timezone changed:", data)}
+      />
+
+      {/* Range example */}
+      <Timepicker
+        options={{
+          range: {
+            enabled: true,
+          },
+        }}
+        onRangeConfirm={(data) => console.log("Range confirmed:", data)}
+        onRangeSwitch={(data) => console.log("Range switch:", data)}
+        onRangeValidation={(data) => console.log("Range validation:", data)}
+      />
+    </>
+  );
+}
+```
+
+**Why plugins must be registered manually:**
+
+- **Tree-shaking** - Bundle only what you use
+- **Performance** - Avoid loading unnecessary code
+- **SSR compatibility** - Plugins load on client-side only
 
 ### SSR (Next.js Example)
 
@@ -152,20 +211,23 @@ The component is SSR-safe by default and will render a basic input during server
 
 ### `TimepickerProps`
 
-| Prop             | Type                                 | Description                                |
-| ---------------- | ------------------------------------ | ------------------------------------------ |
-| `options`        | `TimepickerOptions`                  | Full configuration from timepicker-ui core |
-| `value`          | `string`                             | Controlled value                           |
-| `defaultValue`   | `string`                             | Default value for uncontrolled usage       |
-| `onConfirm`      | `CallbacksOptions['onConfirm']`      | Triggered when user confirms time          |
-| `onCancel`       | `CallbacksOptions['onCancel']`       | Triggered when user cancels                |
-| `onOpen`         | `CallbacksOptions['onOpen']`         | Triggered when timepicker opens            |
-| `onUpdate`       | `CallbacksOptions['onUpdate']`       | Triggered during real-time interaction     |
-| `onSelectHour`   | `CallbacksOptions['onSelectHour']`   | Triggered when hour mode is activated      |
-| `onSelectMinute` | `CallbacksOptions['onSelectMinute']` | Triggered when minute mode is activated    |
-| `onSelectAM`     | `CallbacksOptions['onSelectAM']`     | Triggered when AM is selected              |
-| `onSelectPM`     | `CallbacksOptions['onSelectPM']`     | Triggered when PM is selected              |
-| `onError`        | `CallbacksOptions['onError']`        | Triggered on validation error              |
+| Prop                | Type                                    | Description                                |
+| ------------------- | --------------------------------------- | ------------------------------------------ |
+| `options`           | `TimepickerOptions`                     | Full configuration from timepicker-ui core |
+| `value`             | `string`                                | Controlled value                           |
+| `defaultValue`      | `string`                                | Default value for uncontrolled usage       |
+| `onConfirm`         | `CallbacksOptions['onConfirm']`         | Triggered when user confirms time          |
+| `onCancel`          | `CallbacksOptions['onCancel']`          | Triggered when user cancels                |
+| `onOpen`            | `CallbacksOptions['onOpen']`            | Triggered when timepicker opens            |
+| `onUpdate`          | `CallbacksOptions['onUpdate']`          | Triggered during real-time interaction     |
+| `onSelectHour`      | `CallbacksOptions['onSelectHour']`      | Triggered when hour mode is activated      |
+| `onSelectMinute`    | `CallbacksOptions['onSelectMinute']`    | Triggered when minute mode is activated    |
+| `onSelectAM`        | `CallbacksOptions['onSelectAM']`        | Triggered when AM is selected              |
+| `onSelectPM`        | `CallbacksOptions['onSelectPM']`        | Triggered when PM is selected              |
+| `onTimezoneChange`  | `CallbacksOptions['onTimezoneChange']`  | Triggered when timezone changes (plugin)   |
+| `onRangeConfirm`    | `CallbacksOptions['onRangeConfirm']`    | Triggered when range is confirmed (plugin) |
+| `onRangeSwitch`     | `CallbacksOptions['onRangeSwitch']`     | Triggered when range switches (plugin)     |
+| `onRangeValidation` | `CallbacksOptions['onRangeValidation']` | Triggered on range validation (plugin)     |
 
 The component extends `React.InputHTMLAttributes<HTMLInputElement>`, so all standard input props can be passed directly:
 

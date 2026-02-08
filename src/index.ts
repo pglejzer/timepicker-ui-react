@@ -8,6 +8,7 @@ export type {
   LabelsOptions,
   BehaviorOptions,
   CallbacksOptions,
+  TimezoneOptions,
   OptionTypes,
   OpenEventData,
   CancelEventData,
@@ -21,6 +22,12 @@ export type {
   ShowEventData,
   HideEventData,
   SwitchViewEventData,
+  TimezoneChangeEventData,
+  TimepickerEventMap,
+  CoreState,
+  Plugin,
+  PluginManager,
+  PluginFactory,
 } from "timepicker-ui";
 
-export { TimepickerUI, EventEmitter } from "timepicker-ui";
+export { TimepickerUI, EventEmitter, PluginRegistry } from "timepicker-ui";

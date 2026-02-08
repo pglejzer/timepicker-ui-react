@@ -1,10 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Timepicker } from "../../Timepicker";
+import { PluginRegistry } from "timepicker-ui";
 import type { TimepickerOptions } from "../../index";
 
 function App() {
   const [time, setTime] = useState("");
   const [controlledTime, setControlledTime] = useState("02:30 AM");
+  const [pluginsLoaded, setPluginsLoaded] = useState(false);
+
+  useEffect(() => {
+    const registerPlugins = async () => {
+      try {
+        const { TimezonePlugin } =
+          await import("timepicker-ui/plugins/timezone");
+        const { RangePlugin } = await import("timepicker-ui/plugins/range");
+
+        PluginRegistry.register(TimezonePlugin);
+        PluginRegistry.register(RangePlugin);
+
+        setPluginsLoaded(true);
+        console.log("✅ Plugins registered");
+      } catch (error) {
+        console.error("❌ Failed to load plugins:", error);
+      }
+    };
+
+    registerPlugins();
+  }, []);
 
   const basicOptions: TimepickerOptions = {
     ui: {
@@ -112,6 +134,51 @@ function App() {
             onSelectPM={(data) => console.log("🌆 PM:", data)}
             onError={(data) => console.log("⚠️ Error:", data)}
           />
+        </section>
+
+        <section className="demo-section">
+          <h2>Timezone Support</h2>
+          {!pluginsLoaded && <p className="result">Loading plugins...</p>}
+          {pluginsLoaded && (
+            <Timepicker
+              options={{
+                ui: { theme: "m2" },
+                timezone: {
+                  enabled: true,
+                },
+              }}
+              placeholder="Select time with timezone"
+              className="demo-input"
+              onConfirm={(data) => console.log("✅ Confirmed with TZ:", data)}
+              onTimezoneChange={(data) =>
+                console.log("🌍 Timezone changed:", data)
+              }
+            />
+          )}
+        </section>
+
+        <section className="demo-section">
+          <h2>Range Selection</h2>
+          {!pluginsLoaded && <p className="result">Loading plugins...</p>}
+          {pluginsLoaded && (
+            <Timepicker
+              options={{
+                ui: { theme: "dark" },
+                range: {
+                  enabled: true,
+                },
+              }}
+              placeholder="Select time range"
+              className="demo-input"
+              onRangeConfirm={(data) =>
+                console.log("✅ Range confirmed:", data)
+              }
+              onRangeSwitch={(data) => console.log("🔄 Range switch:", data)}
+              onRangeValidation={(data) =>
+                console.log("✔️ Range validation:", data)
+              }
+            />
+          )}
         </section>
       </div>
 
