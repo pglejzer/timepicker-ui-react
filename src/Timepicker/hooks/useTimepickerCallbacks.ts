@@ -11,13 +11,17 @@ type ReactCallbacks = {
   onSelectAM?: TimepickerProps["onSelectAM"];
   onSelectPM?: TimepickerProps["onSelectPM"];
   onError?: TimepickerProps["onError"];
+  onTimezoneChange?: TimepickerProps["onTimezoneChange"];
+  onRangeConfirm?: TimepickerProps["onRangeConfirm"];
+  onRangeSwitch?: TimepickerProps["onRangeSwitch"];
+  onRangeValidation?: TimepickerProps["onRangeValidation"];
 };
 
 export const useTimepickerCallbacks = (
   pickerRef: React.RefObject<TimepickerInstance | null>,
   attachEventHandlers: (picker: TimepickerInstance) => void,
   detachEventHandlers: (picker: TimepickerInstance) => void,
-  reactCallbacks: ReactCallbacks
+  reactCallbacks: ReactCallbacks,
 ) => {
   useEffect(() => {
     const picker = pickerRef.current;
@@ -43,5 +47,9 @@ export const useTimepickerCallbacks = (
     reactCallbacks.onSelectAM,
     reactCallbacks.onSelectPM,
     reactCallbacks.onError,
+    reactCallbacks.onTimezoneChange,
+    reactCallbacks.onRangeConfirm,
+    reactCallbacks.onRangeSwitch,
+    reactCallbacks.onRangeValidation,
   ]);
 };

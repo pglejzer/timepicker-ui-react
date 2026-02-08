@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2026-02-08
+
+### Added
+
+- Timezone callback support via onTimezoneChange prop
+- Range mode callback support via onRangeConfirm, onRangeSwitch, onRangeValidation props
+- Comprehensive test suite with Vitest achieving 100% code coverage across all modules
+- Plugin registration guide in README with Timezone and Range examples
+- Re-exported TimezoneChangeEventData and TimepickerEventMap types from timepicker-ui
+
+### Updated
+
+- timepicker-ui dependency from 4.0.3 to 4.1.2
+
+---
+
 ## [1.0.1] - 2026-01-24
 
 ### Updated

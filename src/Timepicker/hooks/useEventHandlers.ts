@@ -12,11 +12,15 @@ type ReactCallbacks = {
   onSelectAM?: TimepickerProps["onSelectAM"];
   onSelectPM?: TimepickerProps["onSelectPM"];
   onError?: TimepickerProps["onError"];
+  onTimezoneChange?: TimepickerProps["onTimezoneChange"];
+  onRangeConfirm?: TimepickerProps["onRangeConfirm"];
+  onRangeSwitch?: TimepickerProps["onRangeSwitch"];
+  onRangeValidation?: TimepickerProps["onRangeValidation"];
 };
 
 const mergeCallbacks = (
   react: ReactCallbacks,
-  opts?: CallbacksOptions
+  opts?: CallbacksOptions,
 ): CallbacksOptions => ({
   onConfirm:
     react.onConfirm || opts?.onConfirm
@@ -89,11 +93,43 @@ const mergeCallbacks = (
           react.onError?.(data);
         }
       : undefined,
+
+  onTimezoneChange:
+    react.onTimezoneChange || opts?.onTimezoneChange
+      ? (data) => {
+          opts?.onTimezoneChange?.(data);
+          react.onTimezoneChange?.(data);
+        }
+      : undefined,
+
+  onRangeConfirm:
+    react.onRangeConfirm || opts?.onRangeConfirm
+      ? (data) => {
+          opts?.onRangeConfirm?.(data);
+          react.onRangeConfirm?.(data);
+        }
+      : undefined,
+
+  onRangeSwitch:
+    react.onRangeSwitch || opts?.onRangeSwitch
+      ? (data) => {
+          opts?.onRangeSwitch?.(data);
+          react.onRangeSwitch?.(data);
+        }
+      : undefined,
+
+  onRangeValidation:
+    react.onRangeValidation || opts?.onRangeValidation
+      ? (data) => {
+          opts?.onRangeValidation?.(data);
+          react.onRangeValidation?.(data);
+        }
+      : undefined,
 });
 
 export const useEventHandlers = (
   reactCallbacks: ReactCallbacks,
-  optionsCallbacks?: CallbacksOptions
+  optionsCallbacks?: CallbacksOptions,
 ) => {
   const merged = useMemo(
     () => mergeCallbacks(reactCallbacks, optionsCallbacks),
@@ -108,7 +144,11 @@ export const useEventHandlers = (
       reactCallbacks.onSelectAM,
       reactCallbacks.onSelectPM,
       reactCallbacks.onError,
-    ]
+      reactCallbacks.onTimezoneChange,
+      reactCallbacks.onRangeConfirm,
+      reactCallbacks.onRangeSwitch,
+      reactCallbacks.onRangeValidation,
+    ],
   );
 
   const attach = useCallback(
@@ -123,8 +163,15 @@ export const useEventHandlers = (
       if (merged.onSelectAM) picker.on("select:am", merged.onSelectAM);
       if (merged.onSelectPM) picker.on("select:pm", merged.onSelectPM);
       if (merged.onError) picker.on("error", merged.onError);
+      if (merged.onTimezoneChange)
+        picker.on("timezone:change", merged.onTimezoneChange);
+      if (merged.onRangeConfirm)
+        picker.on("range:confirm", merged.onRangeConfirm);
+      if (merged.onRangeSwitch) picker.on("range:switch", merged.onRangeSwitch);
+      if (merged.onRangeValidation)
+        picker.on("range:validation", merged.onRangeValidation);
     },
-    [merged]
+    [merged],
   );
 
   const detach = useCallback(
@@ -139,8 +186,16 @@ export const useEventHandlers = (
       if (merged.onSelectAM) picker.off("select:am", merged.onSelectAM);
       if (merged.onSelectPM) picker.off("select:pm", merged.onSelectPM);
       if (merged.onError) picker.off("error", merged.onError);
+      if (merged.onTimezoneChange)
+        picker.off("timezone:change", merged.onTimezoneChange);
+      if (merged.onRangeConfirm)
+        picker.off("range:confirm", merged.onRangeConfirm);
+      if (merged.onRangeSwitch)
+        picker.off("range:switch", merged.onRangeSwitch);
+      if (merged.onRangeValidation)
+        picker.off("range:validation", merged.onRangeValidation);
     },
-    [merged]
+    [merged],
   );
 
   return { attachEventHandlers: attach, detachEventHandlers: detach };

@@ -23,6 +23,10 @@ export const Timepicker = forwardRef<HTMLInputElement, TimepickerProps>(
       onSelectAM,
       onSelectPM,
       onError,
+      onTimezoneChange,
+      onRangeConfirm,
+      onRangeSwitch,
+      onRangeValidation,
       onChange,
       ...inputProps
     } = props;
@@ -32,7 +36,7 @@ export const Timepicker = forwardRef<HTMLInputElement, TimepickerProps>(
     useImperativeHandle(
       forwardedRef,
       () => inputRef.current as HTMLInputElement,
-      []
+      [],
     );
 
     const reactCallbacks = {
@@ -45,11 +49,15 @@ export const Timepicker = forwardRef<HTMLInputElement, TimepickerProps>(
       onSelectAM,
       onSelectPM,
       onError,
+      onTimezoneChange,
+      onRangeConfirm,
+      onRangeSwitch,
+      onRangeValidation,
     };
 
     const { attachEventHandlers, detachEventHandlers } = useEventHandlers(
       reactCallbacks,
-      options?.callbacks
+      options?.callbacks,
     );
 
     const pickerRef = useTimepickerInstance(
@@ -58,7 +66,7 @@ export const Timepicker = forwardRef<HTMLInputElement, TimepickerProps>(
       value,
       defaultValue,
       attachEventHandlers,
-      detachEventHandlers
+      detachEventHandlers,
     );
 
     useTimepickerValue(pickerRef, value);
@@ -67,7 +75,7 @@ export const Timepicker = forwardRef<HTMLInputElement, TimepickerProps>(
       pickerRef,
       attachEventHandlers,
       detachEventHandlers,
-      reactCallbacks
+      reactCallbacks,
     );
 
     const isControlled = value !== undefined;
@@ -80,7 +88,7 @@ export const Timepicker = forwardRef<HTMLInputElement, TimepickerProps>(
         {...(isControlled ? { value, readOnly: true } : { defaultValue })}
       />
     );
-  }
+  },
 );
 
 Timepicker.displayName = "Timepicker";
