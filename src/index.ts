@@ -28,6 +28,10 @@ export type {
   Plugin,
   PluginManager,
   PluginFactory,
+  RangeOptions,
+  RangeConfirmEventData,
+  RangeSwitchEventData,
+  RangeValidationEventData,
 } from "timepicker-ui";
 
 export { TimepickerUI, EventEmitter, PluginRegistry } from "timepicker-ui";
