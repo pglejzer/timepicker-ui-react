@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2026-03-24
+
+### Added
+
+- `onClear` prop - callback triggered when the clear button is clicked (maps to `CallbacksOptions["onClear"]` / `clear` event)
+- Re-exported `ClearEventData` type - payload for the `onClear` callback
+- Re-exported `ClearBehaviorOptions` type - options for `clearBehavior.clearInput` configuration
+- Re-exported `WheelOptions` type - options for `wheel` configuration (placement, hideDisabled, commitOnScroll, ignoreOutsideClick, hideFooter)
+- Re-exported `WheelScrollStartEventData` type - payload for the `wheel:scroll:start` event
+- Re-exported `WheelScrollEndEventData` type - payload for the `wheel:scroll:end` event
+- Re-exported `WheelOptions` type - now available for wheel/compact-wheel mode configuration
+
+### Updated
+
+- timepicker-ui dependency from 4.1.7 to 4.2.1
+
+---
+
 ## [1.1.2] - 2026-03-08
 
 ### Updated
@@ -47,7 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 
-- **timepicker-ui** — Updated dependency from `4.0.2` to `4.0.3`
+- **timepicker-ui** - Updated dependency from `4.0.2` to `4.0.3`
 
 ---
 
@@ -57,13 +75,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Core Features
 
-- **Full TypeScript Support** — All types directly from timepicker-ui core
-- **SSR-Safe Architecture** — Works with Next.js, Remix, Gatsby, and other SSR frameworks
-- **Zero Type Duplication** — Re-exports core types, no duplicated interfaces
-- **Event-Driven API** — Direct mapping to timepicker-ui's EventEmitter API
-- **Controlled & Uncontrolled** — Support for both value patterns
-- **ForwardRef Support** — Compatible with React Hook Form and other form libraries
-- **ESM Only** — Modern, tree-shakeable bundle
+- **Full TypeScript Support** - All types directly from timepicker-ui core
+- **SSR-Safe Architecture** - Works with Next.js, Remix, Gatsby, and other SSR frameworks
+- **Zero Type Duplication** - Re-exports core types, no duplicated interfaces
+- **Event-Driven API** - Direct mapping to timepicker-ui's EventEmitter API
+- **Controlled & Uncontrolled** - Support for both value patterns
+- **ForwardRef Support** - Compatible with React Hook Form and other form libraries
+- **ESM Only** - Modern, tree-shakeable bundle
 
 #### Component API
 
@@ -76,18 +94,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Custom Hooks
 
-- `useTimepickerInstance` — SSR-safe dynamic import and instance creation
-- `useEventHandlers` — Event attachment/detachment with callback merging
-- `useTimepickerValue` — Controlled value synchronization with debouncing
-- `useTimepickerOptions` — Options update handling via picker.update()
-- `useTimepickerCallbacks` — Callback re-attachment on changes
+- `useTimepickerInstance` - SSR-safe dynamic import and instance creation
+- `useEventHandlers` - Event attachment/detachment with callback merging
+- `useTimepickerValue` - Controlled value synchronization with debouncing
+- `useTimepickerOptions` - Options update handling via picker.update()
+- `useTimepickerCallbacks` - Callback re-attachment on changes
 
 #### Architecture
 
-- **Composition-based** — Clean wrapper using custom hooks, no inheritance
-- **Modular design** — Separated concerns with dedicated hooks
-- **SSR-safe** — Dynamic imports with browser-only checks (typeof window)
-- **Type-safe** — Strict TypeScript with no `any` types
+- **Composition-based** - Clean wrapper using custom hooks, no inheritance
+- **Modular design** - Separated concerns with dedicated hooks
+- **SSR-safe** - Dynamic imports with browser-only checks (typeof window)
+- **Type-safe** - Strict TypeScript with no `any` types
 
 #### Package Structure
 
@@ -97,9 +115,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependencies
 
-- `timepicker-ui` ^4.0.2 — Core library with Firefox fixes and onUpdate events
-- `react` >=17 — Peer dependency
-- `react-dom` >=17 — Peer dependency
+- `timepicker-ui` ^4.0.2 - Core library with Firefox fixes and onUpdate events
+- `react` >=17 - Peer dependency
+- `react-dom` >=17 - Peer dependency
 
 ---
 
