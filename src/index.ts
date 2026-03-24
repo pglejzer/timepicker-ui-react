@@ -32,6 +32,11 @@ export type {
   RangeConfirmEventData,
   RangeSwitchEventData,
   RangeValidationEventData,
+  ClearEventData,
+  ClearBehaviorOptions,
+  WheelOptions,
+  WheelScrollStartEventData,
+  WheelScrollEndEventData,
 } from "timepicker-ui";
 
 export { TimepickerUI, EventEmitter, PluginRegistry } from "timepicker-ui";

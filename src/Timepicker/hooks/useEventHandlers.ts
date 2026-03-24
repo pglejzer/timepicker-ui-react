@@ -16,6 +16,7 @@ type ReactCallbacks = {
   onRangeConfirm?: TimepickerProps["onRangeConfirm"];
   onRangeSwitch?: TimepickerProps["onRangeSwitch"];
   onRangeValidation?: TimepickerProps["onRangeValidation"];
+  onClear?: TimepickerProps["onClear"];
 };
 
 const mergeCallbacks = (
@@ -125,6 +126,14 @@ const mergeCallbacks = (
           react.onRangeValidation?.(data);
         }
       : undefined,
+
+  onClear:
+    react.onClear || opts?.onClear
+      ? (data) => {
+          opts?.onClear?.(data);
+          react.onClear?.(data);
+        }
+      : undefined,
 });
 
 export const useEventHandlers = (
@@ -148,6 +157,7 @@ export const useEventHandlers = (
       reactCallbacks.onRangeConfirm,
       reactCallbacks.onRangeSwitch,
       reactCallbacks.onRangeValidation,
+      reactCallbacks.onClear,
     ],
   );
 
@@ -170,6 +180,7 @@ export const useEventHandlers = (
       if (merged.onRangeSwitch) picker.on("range:switch", merged.onRangeSwitch);
       if (merged.onRangeValidation)
         picker.on("range:validation", merged.onRangeValidation);
+      if (merged.onClear) picker.on("clear", merged.onClear);
     },
     [merged],
   );
@@ -194,6 +205,7 @@ export const useEventHandlers = (
         picker.off("range:switch", merged.onRangeSwitch);
       if (merged.onRangeValidation)
         picker.off("range:validation", merged.onRangeValidation);
+      if (merged.onClear) picker.off("clear", merged.onClear);
     },
     [merged],
   );

@@ -27,6 +27,7 @@ export const Timepicker = forwardRef<HTMLInputElement, TimepickerProps>(
       onRangeConfirm,
       onRangeSwitch,
       onRangeValidation,
+      onClear,
       onChange,
       ...inputProps
     } = props;
@@ -53,6 +54,7 @@ export const Timepicker = forwardRef<HTMLInputElement, TimepickerProps>(
       onRangeConfirm,
       onRangeSwitch,
       onRangeValidation,
+      onClear,
     };
 
     const { attachEventHandlers, detachEventHandlers } = useEventHandlers(

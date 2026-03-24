@@ -51,6 +51,9 @@ export interface TimepickerProps extends Omit<
 
   /** Callback when range validation occurs */
   onRangeValidation?: CallbacksOptions["onRangeValidation"];
+
+  /** Callback when clear button is clicked */
+  onClear?: CallbacksOptions["onClear"];
 }
 
 export type TimepickerInstance = InstanceType<
