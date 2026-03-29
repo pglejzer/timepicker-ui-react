@@ -37,6 +37,8 @@ export type {
   WheelOptions,
   WheelScrollStartEventData,
   WheelScrollEndEventData,
+  TemplateProvider,
+  ClearHandler,
 } from "timepicker-ui";
 
 export { TimepickerUI, EventEmitter, PluginRegistry } from "timepicker-ui";
