@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0] - 2026-03-29
+
+### Updated
+
+- timepicker-ui dependency from 4.2.1 to 4.3.0
+
+### Added
+
+- Re-exported `TemplateProvider` type - interface for plugin `templateProvider` hook
+- Re-exported `ClearHandler` type - interface for plugin `clearHandler` hook
+
+### Notes
+
+- Plugins now support a `templateProvider` hook to register their own modal templates without core static imports
+- Plugins now support a `clearHandler` hook to register custom clear logic executed when the clear button is pressed
+- Plugin system refactored for true tree-shaking: unused plugins (wheel, range, timezone) are completely excluded from the final bundle when not imported
+- `PluginRegistry.getTemplateProvider()` and `PluginRegistry.getClearHandler()` methods now available on the re-exported `PluginRegistry`
+
+---
+
 ## [1.2.0] - 2026-03-24
 
 ### Added
