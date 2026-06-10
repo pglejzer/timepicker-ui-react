@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.0] - 2026-06-10
+
+### Updated
+
+- timepicker-ui dependency from 4.3.0 to 4.4.0
+
+### Added
+
+- Two new built-in themes, `blueprint` and `blueprint-dark`, selectable via `options.ui.theme` (theme count is now 12). Each ships as its own tree-shakeable stylesheet: `import "timepicker-ui/theme-blueprint.css"` / `import "timepicker-ui/theme-blueprint-dark.css"`
+- 16 new accessibility labels configurable through `options.labels`: `hourLabel`, `minuteLabel`, `clockLabel`, `periodLabel`, `timeLabel`, `format24Label`, `rangeSelectionLabel`, `switchToKeyboardLabel`, `switchToClockLabel`, `toggleLabel`, `timezoneSelectorLabel`, `announceHour`, `announceMinute`, `announceAmSelected`, `announcePmSelected`, `invalidTimeFormat` (flow through the already re-exported `LabelsOptions` / `TimepickerOptions`)
+- Home / End / PageUp / PageDown keyboard support on the clock spinbuttons and wheel columns (from core)
+
+### Changed
+
+- ARIA / screen-reader text now reads from the `labels` group; clock spinbuttons expose `aria-valuetext`; the focus trap now skips `aria-disabled` / `aria-hidden` elements (from core)
+
+### Fixed
+
+- High-contrast focus halo rendering (from core)
+- Firefox native spinner buttons removed on clock inputs (from core)
+- Body scroll-lock is now reference-counted, fixing a stuck unscrollable page when multiple pickers open/close (from core)
+- `theme-crane-straight.css` is now present in the core package `exports` map (from core)
+
+### Notes
+
+- No wrapper API changes were required: all new core surface (themes, labels, keyboard handling) flows through the already re-exported `TimepickerOptions` / `LabelsOptions` / `UIOptions`. No new re-exports, no new event-map entries, no `TimepickerProps` changes.
+
+---
+
 ## [1.3.0] - 2026-03-29
 
 ### Updated
