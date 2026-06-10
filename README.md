@@ -93,9 +93,9 @@ Same options as timepicker-ui core. Full reference: [Options docs](https://timep
 
 ## Themes
 
-Same 10 themes as core. [Browse all](https://timepicker-ui.vercel.app/docs/features/themes) · [Live examples](https://timepicker-ui.vercel.app/examples/themes/basic)
+Same 12 themes as core. [Browse all](https://timepicker-ui.vercel.app/docs/features/themes) · [Live examples](https://timepicker-ui.vercel.app/examples/themes/basic)
 
-Available: `basic`, `crane`, `crane-straight`, `m3-green`, `m2`, `dark`, `glassmorphic`, `pastel`, `ai`, `cyberpunk`
+Available: `basic`, `crane`, `crane-straight`, `m3-green`, `m2`, `dark`, `glassmorphic`, `pastel`, `ai`, `cyberpunk`, `blueprint`, `blueprint-dark`
 
 ```tsx
 import "timepicker-ui/main.css";

@@ -10,3 +10,5 @@ coverage/
 OPTIMIZATION_*.md
 readme_dev*.md
 readme/*.md
+.env*
+.claude/settings.local.json
