@@ -14,12 +14,14 @@ describe("isSSR", () => {
       configurable: true,
     });
 
-    expect(isSSR()).toBe(true);
-
-    Object.defineProperty(globalThis, "window", {
-      value: original,
-      writable: true,
-      configurable: true,
-    });
+    try {
+      expect(isSSR()).toBe(true);
+    } finally {
+      Object.defineProperty(globalThis, "window", {
+        value: original,
+        writable: true,
+        configurable: true,
+      });
+    }
   });
 });

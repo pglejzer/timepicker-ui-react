@@ -35,8 +35,10 @@ the SSR / controlled-uncontrolled contracts. The integration *logic* lives in th
   its shape, the `forwardRef`/`useImperativeHandle` exposure of the input, or the
   controlled (`value` + `readOnly`) vs uncontrolled (`defaultValue`) rendering without
   flagging a breaking change — it ships in `.d.ts`.
-- **SSR stays safe.** Keep `isSSR()` guarding and the core behind dynamic `import()`;
-  no bare `window`/`document` at module scope. Server renders a plain `<input>`.
+- **SSR stays safe.** Keep `isSSR()` guarding the instance effect; the core module must
+  stay free of top-level DOM access (`src/index.ts` imports it statically). No bare
+  `window`/`document` at module scope. The component renders `div.tp-ui > input` so the
+  core never moves the input.
 - **Composition, not logic.** When wiring a new prop, decide which hook syncs it and
   pass it through; keep the prop-destructure + `reactCallbacks` object in `Timepicker.tsx`
   in step with `useEventHandlers`.
@@ -45,7 +47,7 @@ the SSR / controlled-uncontrolled contracts. The integration *logic* lives in th
 - Reporting changed files + contract impact (props shape? export list? controlled
   semantics? SSR?), citing the core source+version for any surface fact, and flagging
   what `hooks-engineer` / `test-engineer` / `build-release` must adapt to.
-- Confirming SSR-safety, LF line endings, and strict-TS cleanliness (no `@ts-ignore`).
+- Confirming SSR-safety, unchanged line endings, and strict-TS cleanliness (no `@ts-ignore`).
 - Leaving hook internals to `hooks-engineer`, tests to `test-engineer`, and
   build/version/export-manifest changes to `build-release` — touch them only via the
   shared contracts. Do NOT run build/test per task; that's the user's batched step.

@@ -3,8 +3,9 @@ import { renderHook } from "@testing-library/react";
 import { useTimepickerValue } from "../hooks/useTimepickerValue";
 import type { TimepickerInstance } from "../types";
 
-const createMockPicker = (): TimepickerInstance =>
+const createMockPicker = (rangeEnabled = false): TimepickerInstance =>
   ({
+    options: { range: { enabled: rangeEnabled } },
     create: vi.fn(),
     destroy: vi.fn(),
     open: vi.fn(),
@@ -78,5 +79,19 @@ describe("useTimepickerValue", () => {
     rerender({ value: "11:00" });
 
     expect(mockPicker.setValue).toHaveBeenCalledWith("11:00", true);
+  });
+
+  it("does not call setValue on a range picker", () => {
+    const rangePicker = createMockPicker(true);
+    const pickerRef = { current: rangePicker };
+
+    const { rerender } = renderHook(
+      ({ value }) => useTimepickerValue(pickerRef, value),
+      { initialProps: { value: "10:00 - 11:00" as string | undefined } },
+    );
+
+    rerender({ value: "12:00 - 13:00" });
+
+    expect(rangePicker.setValue).not.toHaveBeenCalled();
   });
 });

@@ -1,21 +1,20 @@
 # timepicker-ui-react
 
-Official React wrapper for [timepicker-ui](https://github.com/pglejzer/timepicker-ui) v4.x - clock & wheel time picker, full TypeScript, SSR-safe.
+React component for [timepicker-ui](https://github.com/pglejzer/timepicker-ui) v4. It's a thin wrapper: the picker, its options, events and types all come from the core library, and this package only hooks it into React's lifecycle.
 
 [![npm version](https://badge.fury.io/js/timepicker-ui-react.svg)](https://badge.fury.io/js/timepicker-ui-react)
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](https://img.shields.io/npm/l/timepicker-ui-react)
 [![downloads](https://img.shields.io/npm/dm/timepicker-ui-react)](https://npmcharts.com/compare/timepicker-ui-react?minimal=true)
 
-[Live Demo](https://timepicker-ui.vercel.app/react) • [Documentation](https://timepicker-ui.vercel.app/react) • [Changelog](./CHANGELOG.md) • [Core Library](https://github.com/pglejzer/timepicker-ui)
+[Demo and docs](https://timepicker-ui.vercel.app/react) · [Changelog](./CHANGELOG.md) · [Core library](https://github.com/pglejzer/timepicker-ui)
 
-## Why timepicker-ui-react?
+## Why use it
 
-- **Thin wrapper** - all power comes from the battle-tested timepicker-ui core
-- **Zero type duplication** - types re-exported directly from `timepicker-ui`
-- **SSR-safe** - works in Next.js, Remix, Astro out of the box
-- **Controlled & uncontrolled** - both `value` and `defaultValue` patterns
-- **All input props** - extends `InputHTMLAttributes`, pass anything directly
-- **Plugin support** - Timezone, Range, Wheel via `PluginRegistry`
+- No types of its own that could drift out of sync. Everything is re-exported from `timepicker-ui`.
+- Controlled (`value`) or uncontrolled (`defaultValue`), like a normal input.
+- Accepts any `<input>` prop: `className`, `name`, `disabled`, `aria-*`, ...
+- Renders `<div class="tp-ui"><input></div>` on the server and becomes the picker after hydration, so Next.js, Remix and Astro work.
+- Range, timezone and wheel plugins work the same as in the core.
 
 ## Installation
 
@@ -23,9 +22,11 @@ Official React wrapper for [timepicker-ui](https://github.com/pglejzer/timepicke
 npm install timepicker-ui-react
 ```
 
-> `timepicker-ui` is included as a dependency - no need to install it separately.
+Needs React 17 or newer. The package is ESM only.
 
-## Quick Start
+`timepicker-ui` gets installed with it. With pnpm or Yarn PnP, add `timepicker-ui` (same version) to your own dependencies too, since your code imports its CSS directly.
+
+## Quick start
 
 ```tsx
 import { Timepicker } from "timepicker-ui-react";
@@ -41,43 +42,44 @@ function App() {
 }
 ```
 
-## API
-
-Full reference: [Props](https://timepicker-ui.vercel.app/react) · [Options](https://timepicker-ui.vercel.app/docs/api/options) · [Events](https://timepicker-ui.vercel.app/docs/api/events) · [TypeScript](https://timepicker-ui.vercel.app/docs/api/typescript)
+## Props
 
 ```tsx
 <Timepicker
-  // Configuration
-  options={options} // TimepickerOptions
-  value={time} // controlled
-  defaultValue="12:00 AM" // uncontrolled
-  // Callbacks
+  options={options}                 // TimepickerOptions, same as the core
+  value={time}                      // controlled, the input becomes read-only
+  defaultValue="12:00 AM"           // uncontrolled
   onConfirm={(data) => {}}
   onCancel={(data) => {}}
   onOpen={(data) => {}}
+  onShow={(data) => {}}
   onUpdate={(data) => {}}
   onSelectHour={(data) => {}}
   onSelectMinute={(data) => {}}
-  onSelectAM={() => {}}
-  onSelectPM={() => {}}
+  onSelectSecond={(data) => {}}     // with clock.showSeconds
+  onSelectPeriod={(data) => {}}     // data.type is "AM" or "PM"
+  onSwitchView={(data) => {}}       // with ui.viewSwitch
+  onSwitchFace={(data) => {}}       // data.face: "hours", "minutes" or "seconds"
   onClear={(data) => {}}
   onError={(data) => {}}
-  // Plugin callbacks
-  onTimezoneChange={(data) => {}}
-  onRangeConfirm={(data) => {}}
+  onTimezoneChange={(data) => {}}   // timezone plugin
+  onRangeConfirm={(data) => {}}     // range plugin
   onRangeSwitch={(data) => {}}
   onRangeValidation={(data) => {}}
-  // Any standard <input> prop
-  className="my-input"
+  onWheelScrollStart={(data) => {}} // wheel plugin
+  onWheelScrollEnd={(data) => {}}
+  className="my-input"              // and any other <input> prop
   placeholder="Select time"
-  disabled={false}
-  id="timepicker-1"
 />
 ```
 
-## Options Overview
+`onError` is the picker's error callback, not the DOM `error` event.
 
-Same options as timepicker-ui core. Full reference: [Options docs](https://timepicker-ui.vercel.app/docs/api/options) · [Configuration guide](https://timepicker-ui.vercel.app/docs/configuration)
+Docs: [props](https://timepicker-ui.vercel.app/react), [events](https://timepicker-ui.vercel.app/docs/api/events)
+
+## Options
+
+Same as the core ([full list](https://timepicker-ui.vercel.app/docs/api/options)).
 
 ```tsx
 <Timepicker
@@ -91,11 +93,15 @@ Same options as timepicker-ui core. Full reference: [Options docs](https://timep
 />
 ```
 
+Seconds are off by default. With `clock.showSeconds: true` the picker gets a seconds field and values read `HH:MM:SS` (`HH:MM:SS AM` in 12h):
+
+```tsx
+<Timepicker options={{ clock: { showSeconds: true } }} />;
+```
+
 ## Themes
 
-Same 12 themes as core. [Browse all](https://timepicker-ui.vercel.app/docs/features/themes) · [Live examples](https://timepicker-ui.vercel.app/examples/themes/basic)
-
-Available: `basic`, `crane`, `crane-straight`, `m3-green`, `m2`, `dark`, `glassmorphic`, `pastel`, `ai`, `cyberpunk`, `blueprint`, `blueprint-dark`
+[12 themes](https://timepicker-ui.vercel.app/examples/themes/basic), same as the core. `main.css` is required and already includes `basic`. The others are separate imports:
 
 ```tsx
 import "timepicker-ui/main.css";
@@ -106,7 +112,7 @@ import "timepicker-ui/theme-dark.css";
 
 ## Plugins
 
-Docs: [Plugins overview](https://timepicker-ui.vercel.app/docs/features/plugins) · Examples: [Range](https://timepicker-ui.vercel.app/examples/plugins/range) · [Timezone](https://timepicker-ui.vercel.app/examples/plugins/timezone) · [Wheel](https://timepicker-ui.vercel.app/examples/plugins/wheel)
+Register them once, before rendering any picker. `PluginRegistry` is re-exported from this package.
 
 ```tsx
 import { PluginRegistry } from "timepicker-ui-react";
@@ -123,7 +129,9 @@ PluginRegistry.register(WheelPlugin);
 <Timepicker options={{ timezone: { enabled: true } }} onTimezoneChange={(data) => {}} />
 ```
 
-## SSR / Next.js
+## Next.js
+
+The component uses hooks, so in the App Router it has to live in a client component:
 
 ```tsx
 "use client";
@@ -136,11 +144,9 @@ export default function Page() {
 }
 ```
 
-Renders a plain `<input>` on the server, hydrates with the full picker on the client.
+## Types
 
-## Exported Types
-
-All types re-exported from `timepicker-ui`. Full list: [TypeScript docs](https://timepicker-ui.vercel.app/docs/api/typescript)
+All core types and the `TimepickerUI`, `EventEmitter` and `PluginRegistry` values are re-exported ([TypeScript docs](https://timepicker-ui.vercel.app/docs/api/typescript)):
 
 ```tsx
 import type { TimepickerOptions, CallbacksOptions, ConfirmEventData, ... } from "timepicker-ui-react";
@@ -150,13 +156,15 @@ import { TimepickerUI, EventEmitter, PluginRegistry } from "timepicker-ui-react"
 ## Development
 
 ```bash
-cd src && npm run build        # Build library
-cd src/docs && npm run dev     # Run demo
+cd src
+npm run build     # output in ../dist
+npm test
+npm run dev       # demo on http://localhost:3000
 ```
 
 ## Contributing
 
-Contributions welcome! [Open an issue or PR](https://github.com/pglejzer/timepicker-ui-react/issues).
+Issues and PRs welcome on [GitHub](https://github.com/pglejzer/timepicker-ui-react/issues).
 
 ## License
 

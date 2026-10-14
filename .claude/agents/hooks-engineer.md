@@ -55,7 +55,7 @@ symmetry, SSR), so move carefully and preserve the contracts.
 ## Always finish by
 - Reporting which hook(s) changed, the lifecycle/sync/attach impact, and any effect-deps
   change with the reasoning; cite core source+version for any event/method fact.
-- Confirming SSR-safety, attach/detach symmetry, LF line endings, strict-TS cleanliness.
+- Confirming SSR-safety, attach/detach symmetry, unchanged line endings, strict-TS cleanliness.
 - Flagging surface changes for `react-architect` (props/exports), spec needs for
   `test-engineer`, and core-version gaps for `build-release`. Don't run the full suite
   per task — a single focused `vitest` run while iterating is fine; the user runs the

@@ -1,5 +1,7 @@
 import React, { useRef, forwardRef, useImperativeHandle } from "react";
 import type { TimepickerProps } from "./types";
+import { CALLBACK_EVENTS } from "./callbacks";
+import type { CallbackName, ReactCallbacks } from "./callbacks";
 import {
   useEventHandlers,
   useTimepickerInstance,
@@ -8,29 +10,39 @@ import {
   useTimepickerCallbacks,
 } from "./hooks";
 
+type PickerProps = Omit<
+  TimepickerProps,
+  "options" | "value" | "defaultValue" | "onChange"
+>;
+
+type InputProps = Omit<PickerProps, CallbackName>;
+
+const copyCallback = <K extends CallbackName>(
+  target: ReactCallbacks,
+  source: ReactCallbacks,
+  name: K,
+): void => {
+  target[name] = source[name];
+};
+
+const splitCallbacks = (
+  props: PickerProps,
+): { reactCallbacks: ReactCallbacks; inputProps: InputProps } => {
+  const reactCallbacks: ReactCallbacks = {};
+  const inputProps: PickerProps = { ...props };
+
+  for (const [name] of CALLBACK_EVENTS) {
+    copyCallback(reactCallbacks, props, name);
+    delete inputProps[name];
+  }
+
+  return { reactCallbacks, inputProps };
+};
+
 export const Timepicker = forwardRef<HTMLInputElement, TimepickerProps>(
   (props, forwardedRef) => {
-    const {
-      options,
-      value,
-      defaultValue,
-      onConfirm,
-      onCancel,
-      onOpen,
-      onUpdate,
-      onSelectHour,
-      onSelectMinute,
-      onSelectAM,
-      onSelectPM,
-      onError,
-      onTimezoneChange,
-      onRangeConfirm,
-      onRangeSwitch,
-      onRangeValidation,
-      onClear,
-      onChange,
-      ...inputProps
-    } = props;
+    const { options, value, defaultValue, onChange, ...pickerProps } = props;
+    const { reactCallbacks, inputProps } = splitCallbacks(pickerProps);
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -39,23 +51,6 @@ export const Timepicker = forwardRef<HTMLInputElement, TimepickerProps>(
       () => inputRef.current as HTMLInputElement,
       [],
     );
-
-    const reactCallbacks = {
-      onConfirm,
-      onCancel,
-      onOpen,
-      onUpdate,
-      onSelectHour,
-      onSelectMinute,
-      onSelectAM,
-      onSelectPM,
-      onError,
-      onTimezoneChange,
-      onRangeConfirm,
-      onRangeSwitch,
-      onRangeValidation,
-      onClear,
-    };
 
     const { attachEventHandlers, detachEventHandlers } = useEventHandlers(
       reactCallbacks,
@@ -71,24 +66,21 @@ export const Timepicker = forwardRef<HTMLInputElement, TimepickerProps>(
       detachEventHandlers,
     );
 
-    useTimepickerValue(pickerRef, value);
     useTimepickerOptions(pickerRef, options);
-    useTimepickerCallbacks(
-      pickerRef,
-      attachEventHandlers,
-      detachEventHandlers,
-      reactCallbacks,
-    );
+    useTimepickerValue(pickerRef, value);
+    useTimepickerCallbacks(pickerRef, attachEventHandlers, detachEventHandlers);
 
     const isControlled = value !== undefined;
 
     return (
-      <input
-        ref={inputRef}
-        type="text"
-        {...inputProps}
-        {...(isControlled ? { value, readOnly: true } : { defaultValue })}
-      />
+      <div className="tp-ui">
+        <input
+          ref={inputRef}
+          type="text"
+          {...inputProps}
+          {...(isControlled ? { value, readOnly: true } : { defaultValue })}
+        />
+      </div>
     );
   },
 );

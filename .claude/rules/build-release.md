@@ -14,7 +14,7 @@ Pairs with `.claude/rules/architecture.md` and `.claude/rules/core-verification.
 
 ## Build
 
-- **tsup, ESM-only.** `src/tsup.config.ts`: single entry `Timepicker/index.ts`,
+- **tsup, ESM-only.** `src/tsup.config.ts`: single entry `index.ts` (the public entry),
   `format: ["esm"]`, `dts: true`, `treeshake`, `minify`, `clean`, `outDir: ../dist`,
   and `external: ["react", "react-dom", "timepicker-ui"]` — those three are NEVER
   bundled. `esbuildOptions` drops `console`/`debugger`. Build runs from `src/`
@@ -71,4 +71,4 @@ callback→event map, and `TimepickerProps` are validated against (see
   confirm it builds and types emit — report real output, never claim green unrun.
 - Leaving execution to the user: **never** `git add/commit/tag/push` or `npm publish`.
   Propose the version, tag (`v<new-version>`), and a commit message; let the user run them.
-- LF line endings (per `.editorconfig`); no new runtime deps beyond `timepicker-ui`.
+- Line endings as each file has them on disk; no new runtime deps beyond `timepicker-ui`.

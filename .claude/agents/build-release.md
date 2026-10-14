@@ -20,7 +20,7 @@ keep README in sync.
   also `CHANGELOG.md` and `README.md`
 
 ## How you work
-- **tsup, ESM-only.** Single entry `Timepicker/index.ts`, `format: ["esm"]`, `dts`,
+- **tsup, ESM-only.** Single entry `index.ts` (the public entry), `format: ["esm"]`, `dts`,
   `treeshake`, `minify`, `clean`, `outDir: ../dist`, and `external: react / react-dom /
   timepicker-ui` — those three are NEVER bundled. Build runs from `src/`. `dist/` is
   generated, never hand-edited.
@@ -61,6 +61,6 @@ keep README in sync.
   shape, peer/dep ranges, new version) and whether it's release-affecting. You MAY run
   `cd src && npm run build` to confirm it builds and types emit — report real output,
   never claim green unrun.
-- Confirming LF line endings; no new runtime deps beyond `timepicker-ui`.
+- Confirming line endings are unchanged; no new runtime deps beyond `timepicker-ui`.
 - Leaving execution to the user: **never** `git add/commit/tag/push` or `npm publish`.
   Propose the version, tag (`v<new-version>`), and a commit message; let the user run them.

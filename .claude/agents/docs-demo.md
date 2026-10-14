@@ -36,7 +36,7 @@ the local source.
 ## Always finish by
 - Reporting which demo files/examples changed and what they showcase; cite core
   source+version for any option/theme/plugin/event you added.
-- Confirming the demo still runs the local wrapper through the public API, LF line
+- Confirming the demo still runs the local wrapper through the public API, unchanged line
   endings, and that no example claims a prop/option the core doesn't provide.
 - Flagging anything that needs a real wrapper change to `react-architect` /
   `hooks-engineer` rather than working around it in the demo. Don't run build/test per

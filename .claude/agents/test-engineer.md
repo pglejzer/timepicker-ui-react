@@ -46,4 +46,4 @@ coverage without faking it.
   `npm test` / coverage run is the user's batched end-of-session step — note it's ready
   rather than running the whole suite yourself (a single focused spec run while
   iterating is fine).
-- Confirming LF line endings and staying inside `src/Timepicker/__tests__/`.
+- Confirming unchanged line endings and staying inside `src/Timepicker/__tests__/`.

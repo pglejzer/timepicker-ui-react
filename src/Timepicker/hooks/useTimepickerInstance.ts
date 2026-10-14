@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import type { TimepickerOptions } from "timepicker-ui";
 import type { TimepickerInstance } from "../types";
 import { isSSR } from "../utils";
+import { withoutCallbacks } from "./options";
+import { applyValue } from "./value";
 
 export const useTimepickerInstance = (
   inputRef: React.RefObject<HTMLInputElement>,
@@ -21,16 +23,19 @@ export const useTimepickerInstance = (
     import("timepicker-ui").then(({ TimepickerUI }) => {
       if (!mounted || !inputRef.current) return;
 
-      const picker = new TimepickerUI(inputRef.current, options);
-      picker.create();
+      const picker = new TimepickerUI(
+        inputRef.current,
+        withoutCallbacks(options)
+      );
       attachEventHandlers(picker);
+      picker.create();
 
       pickerRef.current = picker;
 
       if (initialValue !== undefined) {
-        picker.setValue(initialValue, true);
+        applyValue(picker, initialValue);
       } else if (initialDefaultValue !== undefined) {
-        picker.setValue(initialDefaultValue, true);
+        applyValue(picker, initialDefaultValue);
       }
     });
 

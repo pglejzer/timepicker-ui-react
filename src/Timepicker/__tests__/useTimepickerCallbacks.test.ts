@@ -1,7 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { Mock } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { useTimepickerCallbacks } from "../hooks/useTimepickerCallbacks";
+import { useEventHandlers } from "../hooks/useEventHandlers";
 import type { TimepickerInstance } from "../types";
+
+type Handler = (data: unknown) => void;
 
 const createMockPicker = (): TimepickerInstance =>
   ({
@@ -18,6 +22,9 @@ const createMockPicker = (): TimepickerInstance =>
     getWrapper: vi.fn(),
   }) as unknown as TimepickerInstance;
 
+const callsOf = (method: unknown): Array<[string, Handler]> =>
+  (method as Mock).mock.calls as Array<[string, Handler]>;
+
 describe("useTimepickerCallbacks", () => {
   let mockPicker: TimepickerInstance;
 
@@ -25,17 +32,18 @@ describe("useTimepickerCallbacks", () => {
     mockPicker = createMockPicker();
   });
 
-  it("attaches handlers when picker is available", () => {
+  it("detaches then attaches when the picker is available", () => {
     const pickerRef = { current: mockPicker };
     const attach = vi.fn();
     const detach = vi.fn();
 
-    renderHook(() =>
-      useTimepickerCallbacks(pickerRef, attach, detach, { onConfirm: vi.fn() }),
-    );
+    renderHook(() => useTimepickerCallbacks(pickerRef, attach, detach));
 
     expect(detach).toHaveBeenCalledWith(mockPicker);
     expect(attach).toHaveBeenCalledWith(mockPicker);
+    expect(detach.mock.invocationCallOrder[0]).toBeLessThan(
+      attach.mock.invocationCallOrder[0],
+    );
   });
 
   it("does not attach handlers when picker is null", () => {
@@ -43,43 +51,60 @@ describe("useTimepickerCallbacks", () => {
     const attach = vi.fn();
     const detach = vi.fn();
 
-    renderHook(() =>
-      useTimepickerCallbacks(pickerRef, attach, detach, { onConfirm: vi.fn() }),
-    );
+    renderHook(() => useTimepickerCallbacks(pickerRef, attach, detach));
 
     expect(attach).not.toHaveBeenCalled();
     expect(detach).not.toHaveBeenCalled();
   });
 
-  it("re-attaches when callbacks change", () => {
+  it("detaches and then re-attaches when the attach function changes", () => {
     const pickerRef = { current: mockPicker };
     const attach = vi.fn();
+    const nextAttach = vi.fn();
     const detach = vi.fn();
-    const cb1 = vi.fn();
-    const cb2 = vi.fn();
-
     const { rerender } = renderHook(
-      ({ callbacks }) =>
-        useTimepickerCallbacks(pickerRef, attach, detach, callbacks),
-      { initialProps: { callbacks: { onConfirm: cb1 } } },
+      ({ attachHandlers }) =>
+        useTimepickerCallbacks(pickerRef, attachHandlers, detach),
+      { initialProps: { attachHandlers: attach } },
     );
 
     attach.mockClear();
     detach.mockClear();
 
-    rerender({ callbacks: { onConfirm: cb2 } });
+    rerender({ attachHandlers: nextAttach });
 
-    expect(detach).toHaveBeenCalled();
-    expect(attach).toHaveBeenCalled();
+    expect(attach).not.toHaveBeenCalled();
+    expect(detach).toHaveBeenCalledWith(mockPicker);
+    expect(nextAttach).toHaveBeenCalledTimes(1);
+    expect(nextAttach).toHaveBeenCalledWith(mockPicker);
+    expect(Math.max(...detach.mock.invocationCallOrder)).toBeLessThan(
+      nextAttach.mock.invocationCallOrder[0],
+    );
+  });
+
+  it("does nothing when rerendered with the same functions", () => {
+    const pickerRef = { current: mockPicker };
+    const attach = vi.fn();
+    const detach = vi.fn();
+    const { rerender } = renderHook(() =>
+      useTimepickerCallbacks(pickerRef, attach, detach),
+    );
+
+    attach.mockClear();
+    detach.mockClear();
+
+    rerender();
+
+    expect(attach).not.toHaveBeenCalled();
+    expect(detach).not.toHaveBeenCalled();
   });
 
   it("detaches on unmount", () => {
     const pickerRef = { current: mockPicker };
     const attach = vi.fn();
     const detach = vi.fn();
-
     const { unmount } = renderHook(() =>
-      useTimepickerCallbacks(pickerRef, attach, detach, { onConfirm: vi.fn() }),
+      useTimepickerCallbacks(pickerRef, attach, detach),
     );
 
     detach.mockClear();
@@ -87,44 +112,6 @@ describe("useTimepickerCallbacks", () => {
     unmount();
 
     expect(detach).toHaveBeenCalledWith(mockPicker);
-  });
-
-  it("handles all callback types in dependencies", () => {
-    const pickerRef = { current: mockPicker };
-    const attach = vi.fn();
-    const detach = vi.fn();
-
-    const allCallbacks = {
-      onConfirm: vi.fn(),
-      onCancel: vi.fn(),
-      onOpen: vi.fn(),
-      onUpdate: vi.fn(),
-      onSelectHour: vi.fn(),
-      onSelectMinute: vi.fn(),
-      onSelectAM: vi.fn(),
-      onSelectPM: vi.fn(),
-      onError: vi.fn(),
-      onTimezoneChange: vi.fn(),
-      onRangeConfirm: vi.fn(),
-      onRangeSwitch: vi.fn(),
-      onRangeValidation: vi.fn(),
-    };
-
-    const { rerender } = renderHook(
-      ({ callbacks }) =>
-        useTimepickerCallbacks(pickerRef, attach, detach, callbacks),
-      { initialProps: { callbacks: allCallbacks } },
-    );
-
-    attach.mockClear();
-    detach.mockClear();
-
-    rerender({
-      callbacks: { ...allCallbacks, onCancel: vi.fn() },
-    });
-
-    expect(detach).toHaveBeenCalled();
-    expect(attach).toHaveBeenCalled();
   });
 
   it("handles unmount when pickerRef.current becomes null", () => {
@@ -133,9 +120,8 @@ describe("useTimepickerCallbacks", () => {
     };
     const attach = vi.fn();
     const detach = vi.fn();
-
     const { unmount } = renderHook(() =>
-      useTimepickerCallbacks(pickerRef, attach, detach, { onConfirm: vi.fn() }),
+      useTimepickerCallbacks(pickerRef, attach, detach),
     );
 
     detach.mockClear();
@@ -144,5 +130,41 @@ describe("useTimepickerCallbacks", () => {
     unmount();
 
     expect(detach).not.toHaveBeenCalled();
+  });
+
+  it("swaps the clear handler when onClear changes, composed with useEventHandlers", () => {
+    const pickerRef = { current: mockPicker };
+    const firstClear = vi.fn();
+    const secondClear = vi.fn();
+    const { rerender } = renderHook(
+      ({ onClear }) => {
+        const { attachEventHandlers, detachEventHandlers } = useEventHandlers(
+          { onClear },
+          undefined,
+        );
+        useTimepickerCallbacks(
+          pickerRef,
+          attachEventHandlers,
+          detachEventHandlers,
+        );
+      },
+      { initialProps: { onClear: firstClear } },
+    );
+
+    const [[, firstHandler]] = callsOf(mockPicker.on);
+
+    rerender({ onClear: secondClear });
+
+    expect(callsOf(mockPicker.off)).toEqual([["clear", firstHandler]]);
+    const onCalls = callsOf(mockPicker.on);
+    expect(onCalls).toHaveLength(2);
+    const [, [event, secondHandler]] = onCalls;
+    expect(event).toBe("clear");
+    expect(secondHandler).not.toBe(firstHandler);
+
+    secondHandler({});
+
+    expect(secondClear).toHaveBeenCalledTimes(1);
+    expect(firstClear).not.toHaveBeenCalled();
   });
 });

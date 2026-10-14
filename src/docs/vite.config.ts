@@ -11,7 +11,7 @@ export default defineConfig({
   resolve: {
     alias: {
       // @ts-ignore
-      "timepicker-ui-react": resolve(__dirname, "../"),
+      "timepicker-ui-react": resolve(__dirname, "../index.ts"),
     },
   },
 });

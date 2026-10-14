@@ -48,11 +48,11 @@ no integration logic itself — it wires props into five single-responsibility h
 
 | Hook | Responsibility |
 |---|---|
-| `useEventHandlers` | Merge React-prop callbacks + `options.callbacks` into one set; expose `attach`/`detach` that `picker.on()/off()` each core event. Owns the **callback-name → core-event-name** map (`onConfirm`→`confirm`, `onSelectHour`→`select:hour`, `onTimezoneChange`→`timezone:change`, …). |
-| `useTimepickerInstance` | Mount-once lifecycle: SSR-guard, dynamic `import("timepicker-ui")`, `new TimepickerUI(input, options)` → `create()` → attach handlers → seed `value`/`defaultValue`; on unmount detach + `destroy()`. Returns `pickerRef`. |
+| `useEventHandlers` | Merge React-prop callbacks + `options.callbacks` into one set (options callback first, then the prop); expose `attach`/`detach` that `picker.on()/off()` each core event; `detach` removes exactly what the last `attach` added. The **callback-name → core-event-name** map is `CALLBACK_EVENTS` in `src/Timepicker/callbacks.ts` (21 pairs, the same as the core's `CALLBACK_BRIDGE`; owned by `react-architect`). |
+| `useTimepickerInstance` | Mount-once lifecycle: SSR-guard, dynamic `import("timepicker-ui")`, `new TimepickerUI(input, withoutCallbacks(options))` → attach handlers → `create()` → seed `value`/`defaultValue`; on unmount detach + `destroy()`. Returns `pickerRef`. The core never gets `callbacks`, so each one fires once. |
 | `useTimepickerValue` | Controlled-mode sync: when `value` changes, `picker.setValue(value, true)` (deduped via `previousValueRef`). |
-| `useTimepickerOptions` | When `options` change, `picker.update({ options, create: true })`. |
-| `useTimepickerCallbacks` | When any callback identity changes, `detach` then re-`attach` on the live instance. |
+| `useTimepickerOptions` | `picker.update({ options: withoutCallbacks(options), create: true })` only when the options without callbacks differ structurally (`isEqualOptions`, `hooks/options.ts`) from the instance's; `update()` re-renders an open picker, so an equal new object must not reach it. |
+| `useTimepickerCallbacks` | When `attach`/`detach` change (any callback changed), `detach` then re-`attach` on the live instance. |
 
 **Hook contract rules:**
 - Each hook does exactly one thing and reads the live instance via `pickerRef.current`,
@@ -78,10 +78,12 @@ re-export without flagging it as a breaking change (it ships in `.d.ts`).
 
 ## 5. SSR & controlled/uncontrolled contracts
 
-- **SSR-safe.** `isSSR()` (`src/Timepicker/utils.ts`) guards the instance effect; the
-  core is loaded via dynamic `import()` so it never runs at module top level. On the
-  server the component renders a plain `<input>`; the picker hydrates on the client. No
-  bare `window`/`document` at module scope.
+- **SSR-safe.** `isSSR()` (`src/Timepicker/utils.ts`) guards the instance effect, which
+  creates the instance after a dynamic `import()`. `src/index.ts` re-exports core values
+  statically, so importing the package evaluates the core module, which must stay free of
+  top-level DOM access. The component renders `<div class="tp-ui"><input></div>` on the
+  server and the client; the core reuses that div instead of moving the input. No bare
+  `window`/`document` at module scope.
 - **Controlled** = `value !== undefined` → render `value` + `readOnly`, and
   `useTimepickerValue` pushes changes into the core. **Uncontrolled** = `defaultValue`.
   Never render both. `onError` is intentionally `Omit`ted from the inherited
@@ -91,8 +93,9 @@ re-export without flagging it as a breaking change (it ships in `.d.ts`).
 
 ## 6. Working agreement (applies to every agent)
 
-- **Line endings: LF.** Per `.editorconfig` this repo uses `lf` — do NOT apply the core
-  repo's CRLF convention here. Match existing file style.
+- **Line endings: keep what each file has on disk.** Most files are CRLF today (sources,
+  `CHANGELOG.md`, `package.json`, `.claude/`), `README.md` is LF; `.editorconfig` pins only
+  `*.js` to LF. A new file matches its neighbours.
 - **Strict TypeScript.** `tsconfig` is `strict` with `noUnusedLocals`,
   `noUnusedParameters`, `noImplicitReturns`, `isolatedModules`. No `@ts-ignore` in
   library source (the docs demo is allowed its own pragmas).
