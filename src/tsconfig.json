@@ -24,6 +24,6 @@
     "resolveJsonModule": true,
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": ["Timepicker/**/*", "vitest.setup.ts"],
+  "include": ["index.ts", "Timepicker/**/*", "vitest.setup.ts"],
   "exclude": ["node_modules", "../dist", "docs"]
 }

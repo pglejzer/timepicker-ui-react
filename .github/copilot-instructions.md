@@ -447,7 +447,7 @@ Code MUST be testable:
 
 ```typescript
 export default defineConfig({
-  entry: ["Timepicker/index.ts"],
+  entry: ["index.ts"],
   format: ["esm"],
   dts: true,
   sourcemap: true,

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { TimepickerInstance } from "../types";
+import { applyValue } from "./value";
 
 export const useTimepickerValue = (
   pickerRef: React.RefObject<TimepickerInstance | null>,
@@ -13,7 +14,7 @@ export const useTimepickerValue = (
       return undefined;
     }
 
-    picker.setValue(value, true);
+    applyValue(picker, value);
     previousValueRef.current = value;
   }, [value]);
 };

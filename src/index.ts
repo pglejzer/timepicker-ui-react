@@ -16,6 +16,7 @@ export type {
   UpdateEventData,
   SelectHourEventData,
   SelectMinuteEventData,
+  SelectSecondEventData,
   SelectAMEventData,
   SelectPMEventData,
   ErrorEventData,

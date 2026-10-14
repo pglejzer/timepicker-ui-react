@@ -23,8 +23,9 @@ src/                        ← ALL source, build, and test work happens here
     index.ts                ← barrel (Timepicker + TimepickerProps)
     Timepicker.tsx          ← the forwardRef component shell (composition only)
     types.ts                ← TimepickerProps, TimepickerInstance (React-specific only)
+    callbacks.ts            ← CALLBACK_EVENTS: callback prop → core event (mirrors the core's CALLBACK_BRIDGE)
     utils.ts                ← isSSR()
-    hooks/                  ← the integration layer (the 5 hooks — see Architecture)
+    hooks/                  ← the integration layer (the 5 hooks + options.ts helpers — see Architecture)
     __tests__/              ← Vitest + React Testing Library specs
   docs/                     ← local Vite demo app (aliases timepicker-ui-react → ../)
   tsup.config.ts            ← build config (ESM, dts, external react/react-dom/timepicker-ui)
@@ -88,11 +89,11 @@ one `pickerRef`):
 
 | Hook | Responsibility |
 |---|---|
-| `useEventHandlers` | Merge React-prop callbacks + `options.callbacks` into one set; expose `attach`/`detach` that `picker.on()/off()` each event. **Owns the callback→core-event-name map** (`onConfirm`→`confirm`, `onSelectHour`→`select:hour`, `onTimezoneChange`→`timezone:change`, …). |
-| `useTimepickerInstance` | Mount-once lifecycle (the only creator/destroyer): SSR-guard, dynamic `import("timepicker-ui")`, `new TimepickerUI(input, options)` → `create()` → attach → seed `value`/`defaultValue`; unmount → detach + `destroy()`. |
+| `useEventHandlers` | Merge React-prop callbacks + `options.callbacks` into one set (options callback first, then the prop), driven by `CALLBACK_EVENTS` in `src/Timepicker/callbacks.ts` (the callback→core-event-name map: `onConfirm`→`confirm`, `onSelectSecond`→`select:second`, `onWheelScrollEnd`→`wheel:scroll:end`, …, 21 pairs, same as the core's `CALLBACK_BRIDGE`). Expose `attach`/`detach`; `detach` removes exactly what the last `attach` added. |
+| `useTimepickerInstance` | Mount-once lifecycle (the only creator/destroyer): SSR-guard, dynamic `import("timepicker-ui")`, `new TimepickerUI(input, withoutCallbacks(options))` → attach → `create()` → seed `value`/`defaultValue`; unmount → detach + `destroy()`. The core never receives `callbacks` (the wrapper calls them once). |
 | `useTimepickerValue` | Controlled sync: on `value` change `picker.setValue(value, true)`, deduped via `previousValueRef`. |
-| `useTimepickerOptions` | On `options` change `picker.update({ options, create: true })`. |
-| `useTimepickerCallbacks` | On callback-identity change, `detach` then re-`attach`. |
+| `useTimepickerOptions` | `picker.update({ options: withoutCallbacks(options), create: true })` only when the options without callbacks differ structurally (`isEqualOptions`) from the ones the instance has; an equal new object (inline `options={{...}}`) does nothing, because `update()` re-renders an open picker. |
+| `useTimepickerCallbacks` | When `attach`/`detach` change (any callback changed), `detach` then re-`attach`. |
 
 Contracts: each hook is single-responsibility, reads `pickerRef.current` and bails if
 null; only `useTimepickerInstance` creates/destroys; effect dependency arrays are part
@@ -101,9 +102,12 @@ stay symmetric.
 
 ### SSR & controlled/uncontrolled
 
-- SSR-safe: `isSSR()` guards the instance effect, the core is behind dynamic `import()`,
-  no bare `window`/`document` at module scope. Server renders a plain `<input>`,
-  hydrates on the client.
+- SSR-safe: `isSSR()` guards the instance effect, which creates the instance after a
+  dynamic `import()`. `src/index.ts` re-exports core values statically, so importing the
+  package also evaluates the core module, which must stay free of top-level DOM access.
+  No bare `window`/`document` at module scope. The component renders
+  `<div class="tp-ui"><input></div>` on the server and the client, so the core never moves
+  the input (React owns the wrapper; a conditional unmount cannot hit a moved node).
 - Controlled = `value !== undefined` → render `value` + `readOnly` (+ value sync).
   Uncontrolled = `defaultValue`. Never both. `onError` is omitted from the inherited
   `InputHTMLAttributes` (collides with the picker error callback). Arbitrary
@@ -120,8 +124,8 @@ import { TimepickerUI, EventEmitter, PluginRegistry } from "timepicker-ui-react"
   options={options}            // TimepickerOptions (from core)
   value={time}                 // controlled
   defaultValue="12:00 AM"      // uncontrolled
-  onConfirm={(d) => {}}        // + onCancel/onOpen/onUpdate/onSelect*/onError/onClear
-  onTimezoneChange={(d) => {}} // + onRange{Confirm,Switch,Validation}
+  onConfirm={(d) => {}}        // + onCancel/onOpen/onShow/onUpdate/onSelect*/onSwitchView/onError/onClear
+  onTimezoneChange={(d) => {}} // + onRange{Confirm,Switch,Validation}, onWheelScroll{Start,End}
   placeholder="Select time"    // any standard <input> prop
 />
 ```
@@ -164,8 +168,8 @@ touches code under one of the scopes below, you (the orchestrator) MUST delegate
 the matching subagent via the Agent/Task tool **before** editing those files yourself.
 Routing is by path:
 
-- `src/Timepicker/Timepicker.tsx`, `src/Timepicker/types.ts`, `src/Timepicker/utils.ts`,
-  `src/Timepicker/index.ts`, `src/index.ts` → `react-architect`
+- `src/Timepicker/Timepicker.tsx`, `src/Timepicker/types.ts`, `src/Timepicker/callbacks.ts`,
+  `src/Timepicker/utils.ts`, `src/Timepicker/index.ts`, `src/index.ts` → `react-architect`
 - `src/Timepicker/hooks/` → `hooks-engineer`
 - `src/Timepicker/__tests__/` → `test-engineer`
 - `src/tsup.config.ts`, `src/tsconfig.json`, root `package.json`, `dist/` contract,
@@ -186,14 +190,15 @@ Rules for delegation:
 
 | Agent | Use it for | Scope |
 |---|---|---|
-| `react-architect` | Component shell, props/types, public re-export surface, SSR + controlled/uncontrolled contracts | `Timepicker.tsx`, `types.ts`, `utils.ts`, `Timepicker/index.ts`, `src/index.ts` |
-| `hooks-engineer` | The 5 hooks: instance lifecycle, value/options sync, callback re-attach, event attach/detach + the callback→event map | `src/Timepicker/hooks/` |
+| `react-architect` | Component shell, props/types, the callback→event map (`callbacks.ts`), public re-export surface, SSR + controlled/uncontrolled contracts | `Timepicker.tsx`, `types.ts`, `callbacks.ts`, `utils.ts`, `Timepicker/index.ts`, `src/index.ts` |
+| `hooks-engineer` | The 5 hooks: instance lifecycle, value/options sync (`hooks/options.ts`), callback re-attach, event attach/detach driven by `CALLBACK_EVENTS` | `src/Timepicker/hooks/` |
 | `test-engineer` | Vitest + RTL specs, 100% coverage, mocking the core | `src/Timepicker/__tests__/` |
 | `build-release` | tsup build, root `package.json` contract, the `timepicker-ui` pin, version/changelog/README release flow | `src/tsup.config.ts`, `src/tsconfig.json`, root `package.json`, `dist/`, release |
 | `docs-demo` | The local Vite demo app | `src/docs/` |
 
 Shared working agreement baked into every agent (see `.claude/rules/architecture.md` §6):
-**LF line endings** (per `.editorconfig` — NOT the core repo's CRLF), strict TypeScript,
+**line endings as each file has them on disk** (most files are CRLF today, `README.md` is LF;
+`.editorconfig` pins only `*.js` to LF), strict TypeScript,
 **ESM-only** with `react`/`react-dom`/`timepicker-ui` always external, **no
 reimplementation of core behavior**, git is the user's job (no commit/push/publish), and
 batch execution (verify and report; the user runs the full suite at the end).
@@ -206,4 +211,5 @@ batch execution (verify and report; the user runs the full suite at the end).
 - ESM-only. `react`, `react-dom`, `timepicker-ui` are external/peer — never bundled.
 - No new runtime dependencies beyond `timepicker-ui`.
 - Re-export core types/values from `src/index.ts`; never redefine a core type locally.
-- LF line endings (`.editorconfig`).
+- Keep each file's line endings as they are on disk (most files are CRLF, `README.md` is LF;
+  `.editorconfig` pins only `*.js` to LF).

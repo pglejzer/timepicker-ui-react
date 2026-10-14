@@ -7,6 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.0] - Unreleased
+
+### Updated
+
+- timepicker-ui dependency from 4.4.0 to 4.5.0
+
+### Added
+
+- `onShow`, `onSelectSecond`, `onSwitchView`, `onWheelScrollStart` and `onWheelScrollEnd` props. They also work in `options.callbacks`
+- `onSelectPeriod` and `onSwitchFace` props for the core's new `select:period` and `switch:face` events
+- Clearer option names from core 4.5.0, such as `ui.initialView` for `ui.mobile`. The old names still work until 5.0
+- Re-exported `SelectSecondEventData` type, the payload of `onSelectSecond`
+- Callback props now show the core's JSDoc descriptions in your editor
+- Optional seconds with `clock.showSeconds: true` (from core)
+- Keyboard control of the clock face (from core)
+
+### Changed
+
+- Callback props now also get events fired while the picker is created, such as an inline picker's `open` or an `error` during init
+- The core instance no longer holds the wrapper's callbacks, so `TimepickerUI.getById(id).options.callbacks` won't list them
+- Changing `options` on an open picker re-renders it and resets a selection that was not confirmed (from core)
+- `behavior.returnFocus` (formerly `focusInputAfterClose`) still defaults to `false`. We recommend `true`, which becomes the default in 5.0 (from core)
+- The `<input>` is now wrapped in `<div class="tp-ui">` on the server too, so markup snapshots change. A `<Timepicker>` inside a `<p>` now gets React's nesting warning
+
+### Deprecated
+
+- `OptionTypes` (use `TimepickerOptions`) and `HideEventData` (never emitted). Both will be removed in 5.0 (from core)
+
+### Fixed
+
+- Callbacks in `options.callbacks` were called twice, by the core and by the wrapper. They are now called once
+- After a callback prop changed, the handler from the first render kept firing next to the new one
+- A new but equal `options` object, such as inline `options={{...}}`, no longer calls `update()`, so an open picker keeps its selection
+- The package now ships the documented re-exports: `TimepickerUI`, `PluginRegistry`, `EventEmitter` and the core types. Before, only `Timepicker` and `TimepickerProps` were exported
+- Unmounting a `<Timepicker>` while its parent stays rendered, such as `{show && <Timepicker />}`, no longer throws `NotFoundError` and breaks the React tree
+- With `range.enabled`, a range value such as `"10:00 AM - 12:00 PM"` in `value` or `defaultValue` no longer fires `onError`
+- Options with an equal `Date` in `clock.currentTime.time` no longer call `update()` on every render
+
+See the timepicker-ui 4.5.0 changelog for every core change.
+
+---
+
 ## [1.4.0] - 2026-06-10
 
 ### Updated
