@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.1] - 2026-10-19
+
+### Fixed
+
+- The package depended on timepicker-ui 4.5.0, so the 4.6.0 options, methods and types listed under 1.6.0 were missing. It now depends on 4.6.0
+
+---
+
 ## [1.6.0] - 2026-10-19
 
 ### Updated
