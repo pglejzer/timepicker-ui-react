@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.5.0] - Unreleased
+## [1.6.0] - 2026-10-19
+
+### Updated
+
+- timepicker-ui dependency from 4.5.0 to 4.6.0
+
+### Added
+
+- `ui.inline.embedded`, `range.linked` and `clock.isTimeDisabled` options (from core). Keep the `isTimeDisabled` function stable, or the picker re-renders on every render
+- `setRange()`, `getRange()`, `setActivePart()` and `refreshDisabledTime()` on the core instance, reachable with `TimepickerUI.getById(id)` (from core)
+- Re-exported `TimeOfDay`, `RangeTimeValue` and `RangeTimeState` types
+
+### Changed
+
+- `on()` and `once()` on the core instance return a function that removes the handler (from core)
+
+---
+
+## [1.5.0] - 2026-10-14
 
 ### Updated
 

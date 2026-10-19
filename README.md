@@ -99,6 +99,18 @@ Seconds are off by default. With `clock.showSeconds: true` the picker gets a sec
 <Timepicker options={{ clock: { showSeconds: true } }} />;
 ```
 
+`clock.isTimeDisabled` takes a function. Keep it stable (`useCallback` or a module-level function): a new function on every render counts as new options, and the wrapper re-applies them, which resets an open picker. When the data the function reads changes, call `refreshDisabledTime()` on the core instance:
+
+```tsx
+const isTimeDisabled = useCallback(({ hour }: TimeOfDay) => hour < 9 || hour >= 17, []);
+
+<Timepicker options={{ clock: { isTimeDisabled }, behavior: { id: "shift" } }} />;
+
+TimepickerUI.getById("shift")?.refreshDisabledTime();
+```
+
+The same instance gives you the range methods `setRange()`, `getRange()` and `setActivePart()`.
+
 ## Themes
 
 [12 themes](https://timepicker-ui.vercel.app/examples/themes/basic), same as the core. `main.css` is required and already includes `basic`. The others are separate imports:
