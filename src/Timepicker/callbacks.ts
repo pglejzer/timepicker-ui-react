@@ -19,6 +19,7 @@ export const CALLBACK_EVENTS = [
   ["onRangeConfirm", "range:confirm"],
   ["onRangeSwitch", "range:switch"],
   ["onRangeValidation", "range:validation"],
+  ["onRangeChange", "range:change"],
   ["onWheelScrollStart", "wheel:scroll:start"],
   ["onWheelScrollEnd", "wheel:scroll:end"],
   ["onClear", "clear"],
