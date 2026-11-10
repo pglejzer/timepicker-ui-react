@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.0] - Unreleased
+
+### Updated
+
+- timepicker-ui dependency from 4.6.0 to 4.7.0
+
+### Added
+
+- `onRangeChange` prop for the core's `range:change` event. It also works in `options.callbacks`. The payload is `{ part, from, to }`
+- Re-exported `parseTime()`, `formatTime()` and `createDisabledTimeCheck()`. They work without a picker (from core)
+- Re-exported types `RangeChangeEventData`, `RangeTimeInput`, `RangeCaptionInput`, `TimepickerView`, `TimeValue`, `TimeFormatOptions`, `DisabledTimeCheckOptions`, `TimepickerEventName` and `PluginTimeView`
+- Re-exported `SelectPeriodEventData` and `SwitchFaceEventData` types, the payloads of `onSelectPeriod` and `onSwitchFace`
+- The range plugin works in `wheel` and `compact-wheel` (from core)
+- `setView()`, `getView()`, `clear()`, `getActivePart()` and `setRangeCaptions()` on the core instance, reachable with `TimepickerUI.getById(id)` (from core)
+- `setRange({ from })` or `setRange({ to })` changes one end and keeps the other (from core)
+
+### Changed
+
+Check these if you style or test the picker (from core):
+
+- AM/PM is a `role="radiogroup"` with `aria-checked`. Selectors that use `aria-pressed` on `.tp-ui-am` and `.tp-ui-pm` need updating
+- The timezone `combobox` role and its `aria-expanded` and `aria-activedescendant` moved to `.tp-ui-timezone-selected`
+- In range mode, the header, timezone row and clock or wheel body sit in `.tp-ui-range-panel`
+- `aria-valuetext` reads "7 of 12" instead of "07"
+- `onSwitchView` receives `{ view }`, and `wheel` and `compact-wheel` no longer show the view-switch icon
+- Clear fires `select:hour`, `clear` and `update`, without the extra 12:00 `update`
+- The `dark` theme uses Material Design 3 colors
+
+See the timepicker-ui 4.7.0 changelog for every core change.
+
+---
+
 ## [1.6.1] - 2026-10-19
 
 ### Fixed
@@ -186,7 +218,7 @@ See the timepicker-ui 4.5.0 changelog for every core change.
 
 ---
 
-## [1.0.0] - 2024-11-23
+## [1.0.0] - 2025-11-23
 
 ### Added
 
