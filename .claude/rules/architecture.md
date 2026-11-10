@@ -48,7 +48,7 @@ no integration logic itself — it wires props into five single-responsibility h
 
 | Hook | Responsibility |
 |---|---|
-| `useEventHandlers` | Merge React-prop callbacks + `options.callbacks` into one set (options callback first, then the prop); expose `attach`/`detach` that `picker.on()/off()` each core event; `detach` removes exactly what the last `attach` added. The **callback-name → core-event-name** map is `CALLBACK_EVENTS` in `src/Timepicker/callbacks.ts` (21 pairs, the same as the core's `CALLBACK_BRIDGE`; owned by `react-architect`). |
+| `useEventHandlers` | Merge React-prop callbacks + `options.callbacks` into one set (options callback first, then the prop); expose `attach`/`detach` that `picker.on()/off()` each core event; `detach` removes exactly what the last `attach` added. The **callback-name → core-event-name** map is `CALLBACK_EVENTS` in `src/Timepicker/callbacks.ts` (22 pairs, the same as the core's `CALLBACK_BRIDGE`; owned by `react-architect`). |
 | `useTimepickerInstance` | Mount-once lifecycle: SSR-guard, dynamic `import("timepicker-ui")`, `new TimepickerUI(input, withoutCallbacks(options))` → attach handlers → `create()` → seed `value`/`defaultValue`; on unmount detach + `destroy()`. Returns `pickerRef`. The core never gets `callbacks`, so each one fires once. |
 | `useTimepickerValue` | Controlled-mode sync: when `value` changes, `picker.setValue(value, true)` (deduped via `previousValueRef`). |
 | `useTimepickerOptions` | `picker.update({ options: withoutCallbacks(options), create: true })` only when the options without callbacks differ structurally (`isEqualOptions`, `hooks/options.ts`) from the instance's; `update()` re-renders an open picker, so an equal new object must not reach it. |

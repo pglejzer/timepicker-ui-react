@@ -64,3 +64,5 @@ keep README in sync.
 - Confirming line endings are unchanged; no new runtime deps beyond `timepicker-ui`.
 - Leaving execution to the user: **never** `git add/commit/tag/push` or `npm publish`.
   Propose the version, tag (`v<new-version>`), and a commit message; let the user run them.
+  The user publishes by creating a GitHub release with that tag; `.github/workflows/publish.yml`
+  then tests, builds and publishes to npm.

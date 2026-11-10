@@ -89,7 +89,7 @@ one `pickerRef`):
 
 | Hook | Responsibility |
 |---|---|
-| `useEventHandlers` | Merge React-prop callbacks + `options.callbacks` into one set (options callback first, then the prop), driven by `CALLBACK_EVENTS` in `src/Timepicker/callbacks.ts` (the callback→core-event-name map: `onConfirm`→`confirm`, `onSelectSecond`→`select:second`, `onWheelScrollEnd`→`wheel:scroll:end`, …, 21 pairs, same as the core's `CALLBACK_BRIDGE`). Expose `attach`/`detach`; `detach` removes exactly what the last `attach` added. |
+| `useEventHandlers` | Merge React-prop callbacks + `options.callbacks` into one set (options callback first, then the prop), driven by `CALLBACK_EVENTS` in `src/Timepicker/callbacks.ts` (the callback→core-event-name map: `onConfirm`→`confirm`, `onSelectSecond`→`select:second`, `onWheelScrollEnd`→`wheel:scroll:end`, …, 22 pairs, same as the core's `CALLBACK_BRIDGE`). Expose `attach`/`detach`; `detach` removes exactly what the last `attach` added. |
 | `useTimepickerInstance` | Mount-once lifecycle (the only creator/destroyer): SSR-guard, dynamic `import("timepicker-ui")`, `new TimepickerUI(input, withoutCallbacks(options))` → attach → `create()` → seed `value`/`defaultValue`; unmount → detach + `destroy()`. The core never receives `callbacks` (the wrapper calls them once). |
 | `useTimepickerValue` | Controlled sync: on `value` change `picker.setValue(value, true)`, deduped via `previousValueRef`. |
 | `useTimepickerOptions` | `picker.update({ options: withoutCallbacks(options), create: true })` only when the options without callbacks differ structurally (`isEqualOptions`) from the ones the instance has; an equal new object (inline `options={{...}}`) does nothing, because `update()` re-renders an open picker. |
@@ -125,7 +125,7 @@ import { TimepickerUI, EventEmitter, PluginRegistry } from "timepicker-ui-react"
   value={time}                 // controlled
   defaultValue="12:00 AM"      // uncontrolled
   onConfirm={(d) => {}}        // + onCancel/onOpen/onShow/onUpdate/onSelect*/onSwitchView/onError/onClear
-  onTimezoneChange={(d) => {}} // + onRange{Confirm,Switch,Validation}, onWheelScroll{Start,End}
+  onTimezoneChange={(d) => {}} // + onRange{Confirm,Switch,Validation,Change}, onWheelScroll{Start,End}
   placeholder="Select time"    // any standard <input> prop
 />
 ```
