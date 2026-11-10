@@ -1,4 +1,12 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeAll,
+  beforeEach,
+  afterEach,
+} from "vitest";
 import React, { createRef } from "react";
 import {
   render,
@@ -86,6 +94,11 @@ const emit = (picker: FakePicker, event: string, data: unknown): void => {
     picker.options.callbacks[bridged[0]]?.(data);
   }
 };
+
+beforeAll(async () => {
+  const core = await import("timepicker-ui");
+  expect(core.TimepickerUI).toBe(FakeTimepickerUI);
+});
 
 beforeEach(() => {
   pickers.length = 0;
@@ -249,6 +262,41 @@ describe("Timepicker callback props", () => {
     expect(handlerCount(picker, event)).toBe(1);
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith(payload);
+  });
+
+  it("calls the onRangeChange prop with the { part, from, to } payload on range:change", async () => {
+    const onRangeChange = vi.fn();
+    const payload = { part: "from", from: "10:00 AM", to: "11:00 AM" };
+
+    const { picker } = await renderPicker(
+      <Timepicker onRangeChange={onRangeChange} />,
+    );
+    emit(picker, "range:change", payload);
+
+    expect(handlerCount(picker, "range:change")).toBe(1);
+    expect(onRangeChange).toHaveBeenCalledTimes(1);
+    expect(onRangeChange).toHaveBeenCalledWith(payload);
+  });
+
+  it("calls options.callbacks.onRangeChange and the onRangeChange prop once each on range:change", async () => {
+    const fromOptions = vi.fn();
+    const fromProp = vi.fn();
+    const payload = { part: "to", from: "09:00 AM", to: "10:30 AM" };
+
+    const { picker } = await renderPicker(
+      <Timepicker
+        options={{ callbacks: { onRangeChange: fromOptions } }}
+        onRangeChange={fromProp}
+      />,
+    );
+    emit(picker, "range:change", payload);
+
+    expect(picker.passedOptions).not.toHaveProperty("callbacks");
+    expect(handlerCount(picker, "range:change")).toBe(1);
+    expect(fromOptions).toHaveBeenCalledTimes(1);
+    expect(fromOptions).toHaveBeenCalledWith(payload);
+    expect(fromProp).toHaveBeenCalledTimes(1);
+    expect(fromProp).toHaveBeenCalledWith(payload);
   });
 
   it("fires options.callbacks.onConfirm and the onConfirm prop once each per confirm", async () => {

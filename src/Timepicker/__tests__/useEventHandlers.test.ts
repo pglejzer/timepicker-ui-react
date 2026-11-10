@@ -27,6 +27,7 @@ const CORE_CALLBACK_EVENTS: Array<[CallbackName, string]> = [
   ["onRangeConfirm", "range:confirm"],
   ["onRangeSwitch", "range:switch"],
   ["onRangeValidation", "range:validation"],
+  ["onRangeChange", "range:change"],
   ["onWheelScrollStart", "wheel:scroll:start"],
   ["onWheelScrollEnd", "wheel:scroll:end"],
   ["onClear", "clear"],
@@ -86,10 +87,11 @@ describe("useEventHandlers", () => {
 
       const eventNames = callsOf(mockPicker.on).map(([event]) => event);
       expect(eventNames).toEqual(CALLBACK_EVENTS.map(([, event]) => event));
-      expect(eventNames).toHaveLength(21);
+      expect(eventNames).toHaveLength(22);
       expect(eventNames).toEqual(
         expect.arrayContaining([
           "show",
+          "range:change",
           "select:second",
           "switch:view",
           "wheel:scroll:start",
@@ -283,6 +285,7 @@ describe("useEventHandlers", () => {
       "onShow",
       "onSelectSecond",
       "onSwitchView",
+      "onRangeChange",
       "onWheelScrollStart",
       "onWheelScrollEnd",
       "onClear",
