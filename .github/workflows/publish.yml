@@ -1,0 +1,76 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Check the versions
+        id: version
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          core=$(node -p "require('./package.json').dependencies['timepicker-ui']")
+          src_core=$(node -p "require('./src/package.json').dependencies['timepicker-ui']")
+          if [ "$core" != "$src_core" ]; then
+            echo "::error::timepicker-ui is $core in package.json but $src_core in src/package.json"
+            exit 1
+          fi
+          if [ "$EVENT_NAME" = "release" ] && [ "${TAG_NAME#v}" != "$version" ]; then
+            echo "::error::Release tag $TAG_NAME does not match package.json version $version"
+            exit 1
+          fi
+          case "$version" in
+            *-*) dist_tag=next ;;
+            *) dist_tag=latest ;;
+          esac
+          echo "dist-tag=$dist_tag" >> "$GITHUB_OUTPUT"
+          echo "Publishing timepicker-ui-react $version (timepicker-ui $core) with the dist-tag $dist_tag (npm $(npm --version))"
+
+      - name: Install build and test tools
+        working-directory: ./src
+        run: npm install --no-audit --no-fund
+
+      - name: Run tests
+        working-directory: ./src
+        run: npm test
+
+      - name: Build
+        working-directory: ./src
+        run: npm run build
+
+      - name: Show the package contents
+        run: npm pack --dry-run
+
+      - name: Publish (dry run)
+        if: github.event_name == 'workflow_dispatch'
+        run: npm publish --dry-run --tag ${{ steps.version.outputs.dist-tag }}
+
+      - name: Publish
+        if: github.event_name == 'release'
+        run: npm publish --tag ${{ steps.version.outputs.dist-tag }}

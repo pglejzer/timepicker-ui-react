@@ -71,4 +71,8 @@ callback→event map, and `TimepickerProps` are validated against (see
   confirm it builds and types emit — report real output, never claim green unrun.
 - Leaving execution to the user: **never** `git add/commit/tag/push` or `npm publish`.
   Propose the version, tag (`v<new-version>`), and a commit message; let the user run them.
+  The user publishes by creating a GitHub release with that tag: `.github/workflows/publish.yml`
+  (npm trusted publishing) checks that the tag matches the version and that the `timepicker-ui`
+  pin is the same in `package.json` and `src/package.json`, runs the tests and the build, then
+  runs `npm publish`. A manual run of the workflow is only a dry run.
 - Line endings as each file has them on disk; no new runtime deps beyond `timepicker-ui`.

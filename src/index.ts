@@ -43,6 +43,24 @@ export type {
   TimeOfDay,
   RangeTimeValue,
   RangeTimeState,
+  SelectPeriodEventData,
+  SwitchFaceEventData,
+  RangeChangeEventData,
+  RangeTimeInput,
+  RangeCaptionInput,
+  TimepickerView,
+  TimeValue,
+  TimeFormatOptions,
+  DisabledTimeCheckOptions,
+  TimepickerEventName,
+  PluginTimeView,
 } from "timepicker-ui";
 
-export { TimepickerUI, EventEmitter, PluginRegistry } from "timepicker-ui";
+export {
+  TimepickerUI,
+  EventEmitter,
+  PluginRegistry,
+  parseTime,
+  formatTime,
+  createDisabledTimeCheck,
+} from "timepicker-ui";

@@ -66,6 +66,7 @@ function App() {
   onRangeConfirm={(data) => {}}     // range plugin
   onRangeSwitch={(data) => {}}
   onRangeValidation={(data) => {}}
+  onRangeChange={(data) => {}}      // data.part, data.from, data.to
   onWheelScrollStart={(data) => {}} // wheel plugin
   onWheelScrollEnd={(data) => {}}
   className="my-input"              // and any other <input> prop
@@ -109,7 +110,9 @@ const isTimeDisabled = useCallback(({ hour }: TimeOfDay) => hour < 9 || hour >= 
 TimepickerUI.getById("shift")?.refreshDisabledTime();
 ```
 
-The same instance gives you the range methods `setRange()`, `getRange()` and `setActivePart()`.
+The same instance gives you `setView()`, `getView()` and `clear()`, and the range methods `setRange()`, `getRange()`, `getActivePart()`, `setActivePart()` and `setRangeCaptions()`. `setRange({ from })` or `setRange({ to })` changes one end.
+
+`parseTime()`, `formatTime()` and `createDisabledTimeCheck()` are re-exported too. They work without a picker.
 
 ## Themes
 
@@ -158,7 +161,7 @@ export default function Page() {
 
 ## Types
 
-All core types and the `TimepickerUI`, `EventEmitter` and `PluginRegistry` values are re-exported ([TypeScript docs](https://timepicker-ui.vercel.app/docs/api/typescript)):
+All core types and the `TimepickerUI`, `EventEmitter`, `PluginRegistry`, `parseTime`, `formatTime` and `createDisabledTimeCheck` values are re-exported ([TypeScript docs](https://timepicker-ui.vercel.app/docs/api/typescript)):
 
 ```tsx
 import type { TimepickerOptions, CallbacksOptions, ConfirmEventData, ... } from "timepicker-ui-react";
